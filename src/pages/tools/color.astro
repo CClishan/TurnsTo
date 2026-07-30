@@ -1,0 +1,82 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { ColorConverter } from "@/components/ColorConverter";
+
+const faq = [
+  {
+    question: "Which color formats can I paste?",
+    answer: "The input accepts HEX, RGB, HSL, and OKLCH values. Once a valid color is entered, every format stays synchronized.",
+  },
+  {
+    question: "Why check against only black and white?",
+    answer: "They are useful first checks for readable foreground text. A final interface should test the exact text and background colors used together.",
+  },
+  {
+    question: "Is the color stored anywhere?",
+    answer: "No. The selected value lives only in your browser and the shareable URL parameter.",
+  },
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      name: "Color Converter",
+      applicationCategory: "DeveloperApplication",
+      operatingSystem: "Any",
+      description: "Convert colors between HEX, RGB, HSL, and OKLCH, then check contrast against black and white text.",
+      isAccessibleForFree: true,
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faq.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: { "@type": "Answer", text: item.answer },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout title="Color converter — TurnsTo" description="Convert HEX, RGB, HSL and OKLCH colors, copy CSS-ready values, and check contrast." {jsonLd}>
+  <section class="tool-page-hero color-hero">
+    <div>
+      <a class="back-link" href="/">← All tools</a>
+      <p class="eyebrow">Color, translated</p>
+      <h1>One color. Every useful format.</h1>
+      <p>Pick, paste, tune, and copy exact values without leaving the page.</p>
+    </div>
+    <span class="hero-tool-mark color-mark" aria-hidden="true"></span>
+  </section>
+
+  <ColorConverter client:load />
+
+  <section class="tool-content-grid color-explainer">
+    <article>
+      <p class="eyebrow">Why OKLCH</p>
+      <h2>Lightness that looks like lightness.</h2>
+      <p>OKLCH is designed to be perceptually uniform: changing its lightness value produces a more predictable visual change than conventional HSL. It makes palette work and contrast decisions easier to reason about.</p>
+      <p>The picker also accepts HEX, RGB, HSL, and OKLCH, then keeps all formats synchronized as you work.</p>
+    </article>
+    <aside class="source-card">
+      <p class="eyebrow">Accessibility check</p>
+      <p>Contrast ratios compare your selected color against white and black text using the WCAG relative-luminance formula.</p>
+      <ul>
+        <li><strong>AA</strong> requires 4.5:1 for normal body text.</li>
+        <li><strong>AAA</strong> requires 7:1 for normal body text.</li>
+        <li>Large text can use a 3:1 AA threshold.</li>
+      </ul>
+      <a href="https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html" target="_blank" rel="noreferrer">Read WCAG contrast guidance ↗</a>
+    </aside>
+  </section>
+
+  <section class="faq-section" aria-labelledby="color-faq">
+    <p class="eyebrow">FAQ</p>
+    <h2 id="color-faq">For code and for people.</h2>
+    {faq.map((item, index) => <details open={index === 0}><summary>{item.question}</summary><p>{item.answer}</p></details>)}
+  </section>
+
+  <aside class="related-tool"><span aria-hidden="true">📏</span><div><p class="eyebrow">Try next</p><h2>Need to compare a real-world length?</h2></div><a href="/tools/screen-ruler">Open screen ruler ↗</a></aside>
+</BaseLayout>

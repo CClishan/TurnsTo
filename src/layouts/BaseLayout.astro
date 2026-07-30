@@ -1,0 +1,71 @@
+---
+import "@/styles/global.css";
+import { ThemeToggle } from "@/components/ThemeToggle";
+
+interface Props {
+  title: string;
+  description: string;
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, jsonLd } = Astro.props;
+const canonicalUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#ffffff" />
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    <title>{title}</title>
+    {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    <script is:inline>
+      const theme = localStorage.getItem("turnsto-theme");
+      if (theme === "dark") {
+        document.documentElement.classList.add("dark");
+        document.documentElement.style.colorScheme = "dark";
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <main id="main-content"><slot /></main>
+    <footer class="site-footer">
+      <div class="footer-divider"><span>About</span></div>
+      <div class="footer-main">
+        <div class="footer-brand">
+          <a class="footer-mark" href="/" aria-label="TurnsTo home"><img src="/turnsto-logo.svg" alt="" width="40" height="40" draggable="false" /></a>
+          <p>Small conversions, clearly made.</p>
+          <a class="footer-tool-link" href="/#tools">Browse tools <span aria-hidden="true">↗</span></a>
+        </div>
+        <nav class="footer-group" aria-label="Product">
+          <h3>Product</h3>
+          <a href="/tools/pet-age">Pet age</a>
+          <a href="/tools/color">Color converter</a>
+          <a href="/tools/screen-ruler">Screen ruler</a>
+        </nav>
+        <nav class="footer-group" aria-label="Principles">
+          <h3>Principles</h3>
+          <a href="/#principles">How it works</a>
+          <a href="/#tools">Local first</a>
+        </nav>
+        <nav class="footer-group" aria-label="Resources">
+          <h3>Resources</h3>
+          <a href="/llms.txt">For AI</a>
+          <a href="/robots.txt">For crawlers</a>
+        </nav>
+        <div class="footer-cta">
+          <h3>Stay in the loop</h3>
+          <span>New tools arrive only when they are worth keeping.</span>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 TurnsTo · Built for the useful moment</p>
+        <ThemeToggle client:load />
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,82 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { PetAgeCalculator } from "@/components/PetAgeCalculator";
+
+const faq = [
+  {
+    question: "Why does dog size matter?",
+    answer: "Smaller dogs generally have longer lifespans than large dogs, so their later adult-year comparison rises more slowly.",
+  },
+  {
+    question: "Can this tell me my pet’s health age?",
+    answer: "No. A human-equivalent age is a comparison device, not a clinical measurement. Health, genetics, diet, care, and breed can all matter more.",
+  },
+  {
+    question: "Why are turtle, parrot, and fish results less exact?",
+    answer: "Those groups span species with dramatically different lifespans and developmental patterns, so the result is a broad life-stage estimate.",
+  },
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      name: "Pet Age Calculator",
+      applicationCategory: "UtilityApplication",
+      operatingSystem: "Any",
+      description: "Estimate human-equivalent ages for dogs, cats, rabbits, hamsters, guinea pigs, turtles, parrots, and ornamental fish.",
+      isAccessibleForFree: true,
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faq.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: { "@type": "Answer", text: item.answer },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout title="Pet age calculator — TurnsTo" description="Estimate a pet's human-equivalent age across 8 companion animals with clear assumptions and a shareable result." {jsonLd}>
+  <section class="tool-page-hero">
+    <div>
+      <a class="back-link" href="/">← All tools</a>
+      <p class="eyebrow">PET AGE CALCULATOR</p>
+      <h1>How old is your pet, in human years?</h1>
+      <p>Choose a companion, add their age, and get a transparent estimate .</p>
+    </div>
+    <span class="hero-tool-mark" aria-hidden="true">🐾</span>
+  </section>
+
+  <PetAgeCalculator client:load />
+
+  <section class="tool-content-grid">
+    <article>
+      <p class="eyebrow">How it works</p>
+      <h2>Not the seven-year myth.</h2>
+      <p>Dogs and cats use common first-year and second-year milestones, then age at a species-appropriate adult rate. Dogs also account for adult size.</p>
+      <p>For rabbits, small mammals, turtles, parrots, and ornamental fish, the result is a lifespan-scaled life-stage comparison. Their biology varies enormously by species, breed, care, and environment, so it is intentionally presented as an estimate.</p>
+    </article>
+    <aside class="source-card">
+      <p class="eyebrow">Method notes</p>
+      <ul>
+        <li>Dog: 15 human years in year 1, then 9, then size-aware adult increments.</li>
+        <li>Cat: 15 human years in year 1, then 9, then 4 per adult year.</li>
+        <li>Other pets: typical lifespan mapped to a comparative human life stage.</li>
+      </ul>
+      <p>For care decisions, diagnosis, or a health concern, speak with a veterinarian.</p>
+      <a href="https://ebusiness.avma.org/files/productdownloads/petsagefaster.pdf" target="_blank" rel="noreferrer">AVMA age guide ↗</a>
+    </aside>
+  </section>
+
+  <section class="faq-section" aria-labelledby="pet-faq">
+    <p class="eyebrow">FAQ</p>
+    <h2 id="pet-faq">A useful estimate, with limits.</h2>
+    {faq.map((item, index) => <details open={index === 0}><summary>{item.question}</summary><p>{item.answer}</p></details>)}
+  </section>
+
+  <aside class="related-tool"><span aria-hidden="true" class="mini-swatch"></span><div><p class="eyebrow">Try next</p><h2>Need a color in another format?</h2></div><a href="/tools/color">Open color converter ↗</a></aside>
+</BaseLayout>

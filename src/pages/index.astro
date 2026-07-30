@@ -1,0 +1,92 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "TurnsTo",
+  description: "Useful, surprisingly specific conversion tools.",
+  inLanguage: "en",
+};
+---
+
+<BaseLayout title="TurnsTo — useful conversions, clearly explained" description="Fast, shareable conversion tools for the everyday and the unexpectedly specific." {jsonLd}>
+  <section class="home-hero">
+    <div class="home-hero-content">
+      <img class="hero-logo" src="/turnsto-logo.svg" alt="TurnsTo" width="96" height="96" draggable="false" />
+      <h1>TurnsTo</h1>
+      <p class="hero-tagline">Unexpected conversions, clearly made.</p>
+      <p class="hero-lede">From a pet’s next life stage to a CSS-ready color, TurnsTo makes surprising conversions feel obvious.</p>
+      <div class="hero-actions">
+        <a class="hero-primary-action" href="#tools">Explore tools <span aria-hidden="true">↓</span></a>
+        <a class="hero-secondary-action" href="#principles">How it works <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="screenshot-carousel" aria-label="TurnsTo product screenshots">
+    <div class="screenshot-frame">
+      <div class="screenshot-placeholder">
+        <p>Product screenshots are being prepared.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tools-section" id="tools" aria-labelledby="tools-title">
+    <div class="section-heading">
+      <p class="eyebrow">Two ways to start</p>
+      <h2 id="tools-title">Tools with an answer and a reason.</h2>
+    </div>
+    <div class="tool-grid">
+      <a class="tool-card pet-tool" href="/tools/pet-age">
+        <span class="tool-symbol">🐾</span>
+        <div>
+          <p class="tool-index">01</p>
+          <h3>Pet age calculator</h3>
+          <p>See a life-stage-aware human equivalent for 8 companion animals.</p>
+        </div>
+        <span class="tool-arrow" aria-hidden="true">↗</span>
+      </a>
+      <a class="tool-card color-tool" href="/tools/color">
+        <span class="tool-symbol color-swatch" aria-hidden="true"></span>
+        <div>
+          <p class="tool-index">02</p>
+          <h3>Color converter</h3>
+          <p>Translate a color into CSS formats, OKLCH, contrast checks, and shareable links.</p>
+        </div>
+        <span class="tool-arrow" aria-hidden="true">↗</span>
+      </a>
+      <a class="tool-card ruler-tool" href="/tools/screen-ruler">
+        <span class="tool-symbol" aria-hidden="true">📏</span>
+        <div>
+          <p class="tool-index">03</p>
+          <h3>Screen ruler</h3>
+          <p>Calibrate your display and compare lengths at a real-world scale.</p>
+        </div>
+        <span class="tool-arrow" aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="principles-section" id="principles" aria-labelledby="principles-title">
+    <p class="eyebrow">Built for the useful moment</p>
+    <h2 id="principles-title">Fast enough to stay out of your way.</h2>
+    <div class="principle-list">
+      <article><strong>Local first</strong><p>Calculations run in your browser. No account, no waiting room.</p></article>
+      <article><strong>Explainable</strong><p>Every estimate brings its assumptions with it, so an answer has context.</p></article>
+      <article><strong>Ready to pass on</strong><p>Inputs live in the URL. Copy a result or send the exact same view.</p></article>
+    </div>
+  </section>
+
+  <section class="home-cta">
+    <p class="eyebrow">No account. No waiting.</p>
+    <h2>Want TurnsTo?</h2>
+    <p>Open a small tool, get a clear answer, and pass it on when it helps.</p>
+    <div class="cta-actions">
+      <a href="/tools/pet-age">Try pet age <span aria-hidden="true">↗</span></a>
+      <a href="/tools/color">Try color converter <span aria-hidden="true">↗</span></a>
+    </div>
+    <p class="cta-note">More unexpected conversions are on the way.</p>
+  </section>
+
+</BaseLayout>

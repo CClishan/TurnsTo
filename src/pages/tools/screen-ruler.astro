@@ -1,0 +1,81 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { ScreenRuler } from "@/components/ScreenRuler";
+
+const faq = [
+  {
+    question: "How can a browser show a real centimeter?",
+    answer: "After you enter the display diagonal and aspect ratio, the tool estimates your display's physical width, then maps that width to CSS pixels reported by the browser.",
+  },
+  {
+    question: "Why does browser zoom matter?",
+    answer: "Zoom changes the relationship between CSS pixels and the physical pixels on your display. Keep zoom at 100% after calibrating for the closest result.",
+  },
+  {
+    question: "Is this accurate enough for manufacturing?",
+    answer: "No. This is a convenient visual reference for everyday objects, not a measurement instrument. Verify critical dimensions with a physical ruler or calibrated device.",
+  },
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      name: "Screen Ruler",
+      applicationCategory: "UtilityApplication",
+      operatingSystem: "Any",
+      description: "Calibrate a display and show a shareable on-screen ruler in centimeters and inches.",
+      isAccessibleForFree: true,
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faq.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: { "@type": "Answer", text: item.answer },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout title="Screen ruler — TurnsTo" description="Calibrate your display and show a real-world ruler in centimeters and inches." {jsonLd}>
+  <section class="tool-page-hero ruler-hero">
+    <div>
+      <a class="back-link" href="/">← All tools</a>
+      <p class="eyebrow">SCREEN RULER</p>
+      <h1>Make your screen a ruler.</h1>
+      <p>Set your display size, choose a length, and preview it at a real-world scale.</p>
+    </div>
+    <span class="hero-tool-mark ruler-mark" aria-hidden="true">↔</span>
+  </section>
+
+  <ScreenRuler client:load />
+
+  <section class="tool-content-grid ruler-explainer">
+    <article>
+      <p class="eyebrow">How it works</p>
+      <h2>A ruler tuned to your display.</h2>
+      <p>Your monitor's diagonal and aspect ratio determine its physical width. The browser-reported screen width then gives us an estimated number of CSS pixels per centimeter.</p>
+      <p>That estimate turns your chosen length into an on-screen ruler. It is useful for quick comparisons, remote planning, and a better sense of scale.</p>
+    </article>
+    <aside class="source-card">
+      <p class="eyebrow">Accuracy notes</p>
+      <p>Results depend on an accurate display size, the selected aspect ratio, operating-system scaling, and browser zoom.</p>
+      <ul>
+        <li>Use the monitor's listed diagonal, not the laptop size.</li>
+        <li>Set browser zoom to 100% before comparing.</li>
+        <li>Use a physical ruler for critical measurements.</li>
+      </ul>
+    </aside>
+  </section>
+
+  <section class="faq-section" aria-labelledby="ruler-faq">
+    <p class="eyebrow">FAQ</p>
+    <h2 id="ruler-faq">A useful scale, with limits.</h2>
+    {faq.map((item, index) => <details open={index === 0}><summary>{item.question}</summary><p>{item.answer}</p></details>)}
+  </section>
+
+  <aside class="related-tool"><span aria-hidden="true" class="mini-swatch"></span><div><p class="eyebrow">Try next</p><h2>Need a color in another format?</h2></div><a href="/tools/color">Open color converter ↗</a></aside>
+</BaseLayout>
