@@ -81,7 +81,7 @@ export function ColorConverter() {
             defaultFormat="hex"
             swatches={swatches}
             hideEyedropper
-            className="bg-transparent p-0 shadow-none"
+            className="color-picker-frame"
             style={{ width: 280, boxShadow: "none" }}
             onValueChange={(value) => {
               const next = parseColor(value);

@@ -552,10 +552,12 @@ h1, h2, h3 { text-wrap: balance; }
 .related-tool h2 { margin: 0; font-size: 1rem; letter-spacing: -0.025em; }
 .related-tool a { color: oklch(52% 0.19 260); font-size: 0.85rem; font-weight: 600; text-decoration: none; }
 
-.color-calculator { grid-template-columns: minmax(20rem, 0.9fr) minmax(0, 1.1fr); }
+.color-calculator { grid-template-columns: minmax(20rem, 0.9fr) minmax(0, 1.1fr); gap: clamp(1.5rem, 4vw, 3rem); overflow: visible; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.color-calculator .color-picker-column { background: transparent; }
 .color-picker-column .eyebrow { margin-bottom: 1.25rem; }
 .color-picker-shell { max-width: 100%; }
-.color-output-column { display: flex; flex-direction: column; gap: 1.25rem; }
+.color-picker-frame { border: 1px solid var(--border); border-radius: 0.75rem; background: oklch(0.98 0.003 250); }
+.color-output-column { display: flex; flex-direction: column; gap: 1.25rem; border: 1px solid var(--border); border-radius: 0.75rem; box-shadow: 0 2px 2px color-mix(in oklch, var(--foreground), transparent 96%); }
 .color-preview { display: flex; min-height: 9.5rem; align-items: end; justify-content: end; padding: 0.9rem; border-radius: 0.5rem; color: white; box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.06); font-size: 0.82rem; font-weight: 650; letter-spacing: 0.02em; text-shadow: 0 1px 2px rgb(0 0 0 / 0.28); }
 .format-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.7rem; }
 .format-grid > div > button { padding-inline: 0.625rem; border-radius: 6px; background: oklch(0.965 0.004 250); }
