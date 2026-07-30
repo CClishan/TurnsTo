@@ -46,6 +46,22 @@ function SubtleTabs<T extends string | number>({
   );
 }
 
+function SegmentedTabs({ value, onValueChange }: { value: Unit; onValueChange: (value: Unit) => void }) {
+  return (
+    <div className="ruler-unit-tabs" role="tablist" aria-label="Length unit">
+      {(["cm", "in"] as const).map((item) => {
+        const isSelected = value === item;
+        return (
+          <button key={item} role="tab" type="button" aria-selected={isSelected} onClick={() => onValueChange(item)}>
+            {isSelected && <motion.span className="ruler-unit-tab-active" layoutId="ruler-length-unit" transition={{ type: "spring", stiffness: 500, damping: 38 }} aria-hidden="true" />}
+            <span>{item}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 interface DisplayInfo {
   logicalWidth: number;
   logicalHeight: number;
@@ -192,7 +208,7 @@ export function ScreenRuler() {
           </div>
           <div className="ruler-length-input">
             <span>Want to turn</span>
-            <div><input type="number" min="0.1" max={unit === "cm" ? "100" : "39.37"} step="0.1" value={Number(visibleLength.toFixed(2))} onChange={(event) => setVisibleLength(Number(event.target.value))} aria-label={`Length to show in ${visibleUnit}`} /><div role="group" aria-label="Length unit"><button className={unit === "cm" ? "is-selected" : ""} type="button" onClick={() => setUnit("cm")}>cm</button><button className={unit === "in" ? "is-selected" : ""} type="button" onClick={() => setUnit("in")}>in</button></div></div>
+            <div><input type="number" min="0.1" max={unit === "cm" ? "100" : "39.37"} step="0.1" value={Number(visibleLength.toFixed(2))} onChange={(event) => setVisibleLength(Number(event.target.value))} aria-label={`Length to show in ${visibleUnit}`} /><SegmentedTabs value={unit} onValueChange={setUnit} /></div>
           </div>
           <div className="ruler-presets" aria-label="Quick length presets">
             <span>Quick presets</span>
