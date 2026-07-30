@@ -1603,9 +1603,8 @@ const ColorPicker = forwardRef<HTMLDivElement, ColorPickerProps>(
     const lastEmittedRef = useRef<string>("");
     useEffect(() => {
       if (!isControlled) return;
-      const emitted = lastEmittedRef.current;
       const cur = value as string;
-      if (cur === emitted) return;
+      if (cur === lastEmittedRef.current) return;
       const p = parseColor(cur);
       if (!p) return;
       oklchHueRef.current = null;
@@ -1617,11 +1616,8 @@ const ColorPicker = forwardRef<HTMLDivElement, ColorPickerProps>(
         a: p.a,
       };
       setHsv(nextHsv);
-      const next = buildParsed(nextHsv.h, nextHsv.s, nextHsv.v, nextHsv.a);
-      const formatted = formatValueByFormat(next, currentFormat);
-      lastEmittedRef.current = formatted;
-      onValueChange?.(formatted, next);
-    }, [value, isControlled, hsv.h, currentFormat, onValueChange]);
+      lastEmittedRef.current = cur;
+    }, [value, isControlled, hsv.h]);
 
     const parsed = useMemo(
       () => buildParsed(hsv.h, hsv.s, hsv.v, hsv.a),

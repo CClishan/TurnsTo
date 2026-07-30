@@ -1,9 +1,12 @@
 "use client";
 
 import { Check, ChevronDown, Link2 } from "lucide-react";
+import { Select } from "@base-ui/react/select";
+import { motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 
 const commonDisplaySizes = [21.5, 24, 27, 32, 34];
+const commonAspectRatios = ["16:9", "16:10", "3:2", "4:3", "21:9", "32:9"];
 
 const presets = [
   { label: "1 cm", length: 1, unit: "cm" },
@@ -16,6 +19,32 @@ const presets = [
 ] as const;
 
 type Unit = "cm" | "in";
+
+function SubtleTabs<T extends string | number>({
+  ariaLabel,
+  items,
+  selected,
+  onSelect,
+}: {
+  ariaLabel: string;
+  items: readonly { label: string; value: T }[];
+  selected: T | null;
+  onSelect: (value: T) => void;
+}) {
+  return (
+    <div className="ruler-subtle-tabs" role="tablist" aria-label={ariaLabel}>
+      {items.map((item) => {
+        const isSelected = selected === item.value;
+        return (
+          <button key={String(item.value)} role="tab" type="button" aria-selected={isSelected} onClick={() => onSelect(item.value)}>
+            {isSelected && <motion.span className="ruler-subtle-tab-active" layoutId={ariaLabel} transition={{ type: "spring", stiffness: 500, damping: 38 }} aria-hidden="true" />}
+            <span>{item.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
 interface DisplayInfo {
   logicalWidth: number;
@@ -100,7 +129,8 @@ export function ScreenRuler() {
   const ticks = Array.from({ length: Math.round(length * 10) + 1 }, (_, index) => index);
   const visibleLength = unit === "cm" ? length : length / 2.54;
   const visibleUnit = unit === "cm" ? "cm" : "in";
-  const aspectIsValid = Boolean(parseAspect(aspect));
+  const aspectOptions = commonAspectRatios.includes(aspect) ? commonAspectRatios : [aspect, ...commonAspectRatios];
+  const selectedPreset = presets.find((preset) => preset.unit === unit && Math.abs(length - (preset.unit === "cm" ? preset.length : preset.length * 2.54)) < 0.005)?.label ?? null;
 
   function setVisibleLength(nextLength: number) {
     if (!Number.isFinite(nextLength)) return;
@@ -139,15 +169,26 @@ export function ScreenRuler() {
           <div className="ruler-display-settings-row">
             <fieldset className="ruler-size-options">
               <legend>Display size (inches)</legend>
-              <div>
-                {commonDisplaySizes.map((value) => <button className={diagonal === value ? "is-selected" : ""} key={value} type="button" onClick={() => setDiagonal(value)}>{value}&quot;</button>)}
-                <label>Custom <input type="number" min="10" max="60" step="0.1" value={diagonal} onChange={(event) => setDiagonal(clamp(Number(event.target.value), 10, 60))} aria-label="Custom display diagonal in inches" /></label>
+              <div className="ruler-size-control">
+                <SubtleTabs ariaLabel="Common display sizes" items={commonDisplaySizes.map((value) => ({ label: `${value}\"`, value }))} selected={commonDisplaySizes.includes(diagonal) ? diagonal : null} onSelect={setDiagonal} />
+                <label className="ruler-custom-size"><span>Custom</span><input type="number" min="10" max="60" step="0.1" value={diagonal} onChange={(event) => setDiagonal(clamp(Number(event.target.value), 10, 60))} aria-label="Custom display diagonal in inches" /></label>
               </div>
             </fieldset>
-            <label className="ruler-input">
+            <div className="ruler-input">
               <span>Aspect ratio</span>
-              <div><input value={aspect} onChange={(event) => setAspect(event.target.value)} aria-invalid={!aspectIsValid} aria-label="Display aspect ratio" placeholder="16:9" /></div>
-            </label>
+              <Select.Root value={aspect} items={aspectOptions.map((value) => ({ label: value, value }))} onValueChange={(value) => { if (value) setAspect(value); }}>
+                <Select.Trigger className="ruler-aspect-trigger" aria-label="Display aspect ratio"><Select.Value /><Select.Icon><ChevronDown size={14} aria-hidden="true" /></Select.Icon></Select.Trigger>
+                <Select.Portal>
+                  <Select.Positioner sideOffset={6} className="ruler-aspect-positioner">
+                    <Select.Popup className="ruler-aspect-popup">
+                      <Select.List>
+                        {aspectOptions.map((value) => <Select.Item key={value} value={value} className="ruler-aspect-option"><Select.ItemText>{value}</Select.ItemText><Select.ItemIndicator><Check size={14} aria-hidden="true" /></Select.ItemIndicator></Select.Item>)}
+                      </Select.List>
+                    </Select.Popup>
+                  </Select.Positioner>
+                </Select.Portal>
+              </Select.Root>
+            </div>
           </div>
           <div className="ruler-length-input">
             <span>Want to turn</span>
@@ -155,7 +196,7 @@ export function ScreenRuler() {
           </div>
           <div className="ruler-presets" aria-label="Quick length presets">
             <span>Quick presets</span>
-            <div>{presets.map((preset) => <button key={preset.label} type="button" onClick={() => applyPreset(preset)}>{preset.label}</button>)}</div>
+            <SubtleTabs ariaLabel="Quick length presets" items={presets.map((preset) => ({ label: preset.label, value: preset.label }))} selected={selectedPreset} onSelect={(label) => { const preset = presets.find((item) => item.label === label); if (preset) applyPreset(preset); }} />
           </div>
         </div>
       </div>

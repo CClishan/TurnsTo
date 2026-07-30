@@ -4,17 +4,11 @@ import { Check, Contrast, Link2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { buildParsedColor, parseColor, type ParsedColor } from "@/lib/color";
 import { InputCopy } from "@/components/ui/input-copy";
+import { ColorPicker } from "@/components/ui/color-picker";
 
 const fallback = buildParsedColor(355, 0.43, 0.58, 1);
 
-const swatches = [
-  { label: "Transparent", color: "#ffffff", alpha: 0 },
-  { label: "Black", color: "#000000", alpha: 1 },
-  { label: "White", color: "#ffffff", alpha: 1 },
-  { label: "Green", color: "#00df1a", alpha: 1 },
-  { label: "Purple", color: "#a855f7", alpha: 1 },
-  { label: "Lilac", color: "#ddccff", alpha: 1 },
-];
+const swatches = ["transparent", "#000000", "#ffffff", "#00df1a", "#a855f7", "#ddccff"];
 
 function luminance(red: number, green: number, blue: number) {
   const toLinear = (value: number) => {
@@ -35,39 +29,13 @@ function rating(ratio: number) {
   return "Fails";
 }
 
-function clamp(value: number, minimum = 0, maximum = 1) {
-  return Math.min(maximum, Math.max(minimum, value));
-}
-
 export function ColorConverter() {
   const [parsed, setParsed] = useState<ParsedColor>(fallback);
-  const [draft, setDraft] = useState(fallback.hex);
   const [ready, setReady] = useState(false);
   const [shared, setShared] = useState(false);
 
   function commit(next: ParsedColor) {
     setParsed(next);
-    setDraft(next.hex);
-  }
-
-  function updateHsv(next: Partial<Pick<ParsedColor, "h" | "s" | "v" | "a">>) {
-    commit(buildParsedColor(next.h ?? parsed.h, next.s ?? parsed.s, next.v ?? parsed.v, next.a ?? parsed.a));
-  }
-
-  function updateFromSurface(clientX: number, clientY: number, element: HTMLElement) {
-    const rect = element.getBoundingClientRect();
-    updateHsv({ s: clamp((clientX - rect.left) / rect.width), v: 1 - clamp((clientY - rect.top) / rect.height) });
-  }
-
-  function handleDraftChange(value: string) {
-    setDraft(value);
-    const next = parseColor(value);
-    if (next) setParsed(next);
-  }
-
-  function handleSwatchPick(color: string, alpha: number) {
-    const next = parseColor(color);
-    if (next) commit(buildParsedColor(next.h, next.s, next.v, alpha));
   }
 
   useEffect(() => {
@@ -108,48 +76,16 @@ export function ColorConverter() {
       <div className="color-picker-column">
         <p className="eyebrow">Pick or paste a color</p>
         <div className="color-picker-shell">
-          <div
-            className="color-surface"
-            role="slider"
-            aria-label="Saturation and brightness"
-            aria-valuetext={`${Math.round(parsed.s * 100)}% saturation, ${Math.round(parsed.v * 100)}% brightness`}
-            tabIndex={0}
-            style={{ background: `linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, hsl(${parsed.h} 100% 50%))` }}
-            onPointerDown={(event) => {
-              event.currentTarget.setPointerCapture(event.pointerId);
-              updateFromSurface(event.clientX, event.clientY, event.currentTarget);
+          <ColorPicker
+            value={parsed.hex}
+            defaultFormat="hex"
+            swatches={swatches}
+            hideEyedropper
+            onValueChange={(value) => {
+              const next = parseColor(value);
+              if (next) commit(next);
             }}
-            onPointerMove={(event) => {
-              if (event.currentTarget.hasPointerCapture(event.pointerId)) updateFromSurface(event.clientX, event.clientY, event.currentTarget);
-            }}
-            onKeyDown={(event) => {
-              const step = event.shiftKey ? 0.1 : 0.02;
-              if (event.key === "ArrowLeft") updateHsv({ s: clamp(parsed.s - step) });
-              else if (event.key === "ArrowRight") updateHsv({ s: clamp(parsed.s + step) });
-              else if (event.key === "ArrowUp") updateHsv({ v: clamp(parsed.v + step) });
-              else if (event.key === "ArrowDown") updateHsv({ v: clamp(parsed.v - step) });
-              else return;
-              event.preventDefault();
-            }}
-          >
-            <span className="color-surface-thumb" style={{ left: `${parsed.s * 100}%`, top: `${(1 - parsed.v) * 100}%`, backgroundColor: parsed.hex }} aria-hidden="true" />
-          </div>
-
-          <input className="color-range color-hue-range" type="range" min="0" max="360" value={parsed.h} onChange={(event) => updateHsv({ h: Number(event.target.value) })} aria-label="Hue" />
-          <input className="color-range color-alpha-range" type="range" min="0" max="100" value={Math.round(parsed.a * 100)} onChange={(event) => updateHsv({ a: Number(event.target.value) / 100 })} aria-label="Alpha" style={{ backgroundImage: `linear-gradient(to right, transparent, rgb(${parsed.r}, ${parsed.g}, ${parsed.b})), conic-gradient(var(--border) 0 25%, transparent 0 50%, var(--border) 0 75%, transparent 0)`, backgroundSize: "100% 100%, 0.8rem 0.8rem" }} />
-
-          <div className="color-swatches" aria-label="Color swatches">
-            {swatches.map((swatch) => (
-              <button key={swatch.label} className={swatch.alpha === 0 ? "is-transparent" : ""} type="button" aria-label={`Select ${swatch.label}`} onClick={() => handleSwatchPick(swatch.color, swatch.alpha)}>
-                <span style={{ backgroundColor: swatch.color, opacity: swatch.alpha }} />
-              </button>
-            ))}
-          </div>
-
-          <div className="color-entry-row">
-            <label><span>#</span><input value={draft.replace(/^#/, "")} onChange={(event) => handleDraftChange(`#${event.target.value}`)} onBlur={() => setDraft(parsed.hex)} aria-label="Hex value" /></label>
-            <label><input type="number" min="0" max="100" value={Math.round(parsed.a * 100)} onChange={(event) => updateHsv({ a: Number(event.target.value) / 100 })} aria-label="Alpha" /><span>%</span></label>
-          </div>
+          />
         </div>
       </div>
       <div className="color-output-column">
