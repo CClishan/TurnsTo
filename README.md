@@ -1,6 +1,6 @@
 # TurnsTo
 
-An English-first collection of quick, explainable conversion tools. The MVP ships a pet-age estimate and a color converter.
+An English-first collection of quick, explainable conversion tools. The MVP includes a pet-age estimate, an original pet-card maker, a color converter, and a screen ruler.
 
 ## Run locally
 

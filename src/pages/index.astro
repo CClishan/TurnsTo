@@ -25,9 +25,20 @@ const jsonLd = {
   </section>
 
   <section class="screenshot-carousel" aria-label="TurnsTo product screenshots">
-    <div class="screenshot-frame">
-      <div class="screenshot-placeholder">
-        <p>Product screenshots are being prepared.</p>
+    <div class="screenshot-frame" id="screenshot-carousel" role="region" aria-roledescription="carousel" aria-label="TurnsTo illustrations">
+      <div class="screenshot-track">
+        <img class="screenshot-slide is-active" src="/home-illustrations/turnsto-forest.jpg" alt="A pink character running through a green forest" width="4096" height="1713" fetchpriority="high" draggable="false" />
+        <img class="screenshot-slide" src="/home-illustrations/turnsto-water.jpg" alt="A small character floating in a bright blue pool" width="4096" height="1713" draggable="false" />
+      </div>
+      <button class="screenshot-nav screenshot-prev" type="button" aria-label="Previous illustration">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6" /></svg>
+      </button>
+      <button class="screenshot-nav screenshot-next" type="button" aria-label="Next illustration">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
+      </button>
+      <div class="screenshot-dots" aria-label="Choose illustration">
+        <button class="screenshot-dot is-active" type="button" aria-label="Show illustration 1" aria-current="true" />
+        <button class="screenshot-dot" type="button" aria-label="Show illustration 2" />
       </div>
     </div>
   </section>
@@ -35,31 +46,53 @@ const jsonLd = {
   <section class="tools-section" id="tools" aria-labelledby="tools-title">
     <div class="section-heading">
       <h2 id="tools-title">Tools with an answer and a reason.</h2>
+      <p>Open a focused tool, get a useful result, and keep enough context to trust it.</p>
     </div>
     <div class="tool-grid">
       <a class="tool-card pet-tool" href="/tools/pet-age">
-        <div>
-          <p class="tool-index">01</p>
+        <div class="tool-card-visual tool-pet-visual" aria-hidden="true">
+          <img src="/pet-assets/cat/pattern/brown-tabby__basic.svg" alt="" width="280" height="280" loading="lazy" draggable="false" />
+          <span>3 years</span><strong>28</strong><small>human years</small>
+        </div>
+        <div class="tool-card-meta">
           <h3>Pet age calculator</h3>
           <p>See a life-stage-aware human equivalent for 8 companion animals.</p>
+          <span class="tool-card-action">To Turns <span aria-hidden="true">→</span></span>
         </div>
-        <span class="tool-card-action" aria-hidden="true">To Turns <span>→</span></span>
       </a>
       <a class="tool-card color-tool" href="/tools/color">
-        <div>
-          <p class="tool-index">02</p>
+        <div class="tool-card-visual tool-color-visual" aria-hidden="true">
+          <div class="tool-color-swatches"><span></span><span></span><span></span><span></span></div>
+          <div class="tool-color-values"><span>HEX</span><strong>#6E4040</strong><span>OKLCH</span><strong>52.4% 0.07 22</strong></div>
+        </div>
+        <div class="tool-card-meta">
           <h3>Color converter</h3>
           <p>Translate a color into CSS formats, OKLCH, contrast checks, and shareable links.</p>
+          <span class="tool-card-action">To Turns <span aria-hidden="true">→</span></span>
         </div>
-        <span class="tool-card-action" aria-hidden="true">To Turns <span>→</span></span>
       </a>
       <a class="tool-card ruler-tool" href="/tools/screen-ruler">
-        <div>
-          <p class="tool-index">03</p>
+        <div class="tool-card-visual tool-ruler-visual" aria-hidden="true">
+          <div class="tool-ruler-ticks"><span>0</span><span>5</span><span>10</span><span>15</span><span>20 cm</span></div>
+          <div class="tool-ruler-line"></div>
+          <p>Calibrated to your display</p>
+        </div>
+        <div class="tool-card-meta">
           <h3>Screen ruler</h3>
           <p>Calibrate your display and compare lengths at a real-world scale.</p>
+          <span class="tool-card-action">To Turns <span aria-hidden="true">→</span></span>
         </div>
-        <span class="tool-card-action" aria-hidden="true">To Turns <span>→</span></span>
+      </a>
+      <a class="tool-card pet-card-tool" href="/tools/pet-card?pet=cat">
+        <div class="tool-card-visual tool-pet-card-visual" aria-hidden="true">
+          <img src="/pet-assets/cat/pattern/calico__pattern_2.svg" alt="" width="280" height="280" loading="lazy" draggable="false" />
+          <span>Milo</span><small>your companion card</small>
+        </div>
+        <div class="tool-card-meta">
+          <h3>Pet card maker</h3>
+          <p>Build and share a companion portrait from cat illustration parts.</p>
+          <span class="tool-card-action">To Turns <span aria-hidden="true">→</span></span>
+        </div>
       </a>
     </div>
   </section>
@@ -87,3 +120,31 @@ const jsonLd = {
   </section>
 
 </BaseLayout>
+
+<script>
+  const carousel = document.querySelector("#screenshot-carousel");
+
+  if (carousel) {
+    const track = carousel.querySelector(".screenshot-track");
+    const slides = Array.from(carousel.querySelectorAll(".screenshot-slide"));
+    const dots = Array.from(carousel.querySelectorAll(".screenshot-dot"));
+    const previous = carousel.querySelector(".screenshot-prev");
+    const next = carousel.querySelector(".screenshot-next");
+    let activeIndex = 0;
+
+    const showSlide = (index: number) => {
+      activeIndex = (index + slides.length) % slides.length;
+      track?.setAttribute("style", `transform: translateX(-${activeIndex * 100}%);`);
+      slides.forEach((slide, slideIndex) => slide.classList.toggle("is-active", slideIndex === activeIndex));
+      dots.forEach((dot, dotIndex) => {
+        const isActive = dotIndex === activeIndex;
+        dot.classList.toggle("is-active", isActive);
+        dot.toggleAttribute("aria-current", isActive);
+      });
+    };
+
+    previous?.addEventListener("click", () => showSlide(activeIndex - 1));
+    next?.addEventListener("click", () => showSlide(activeIndex + 1));
+    dots.forEach((dot, index) => dot.addEventListener("click", () => showSlide(index)));
+  }
+</script>

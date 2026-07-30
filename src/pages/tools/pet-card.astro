@@ -1,0 +1,27 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { PetAvatarMaker } from "@/components/PetAvatarMaker";
+---
+
+<BaseLayout title="Pet card maker — TurnsTo" description="Make an original, shareable portrait card for your dog or cat.">
+  <section class="tool-page-hero">
+    <div>
+      <a class="back-link" href="/tools/pet-age">← Pet age calculator</a>
+      <p class="eyebrow">PET CARD MAKER</p>
+      <h1>Make a card for your companion.</h1>
+      <p>Choose real illustration parts to make a shareable companion portrait alongside their age estimate.</p>
+    </div>
+    <span class="hero-tool-mark" aria-hidden="true">✦</span>
+  </section>
+
+  <PetAvatarMaker client:load />
+
+  <section class="tool-content-grid">
+    <article>
+      <p class="eyebrow">Made for the next step</p>
+      <h2>A portrait, built from real cat parts.</h2>
+      <p>Choose body, coat, ears, eyes, nose, muzzle markings, socks, and tail from the supplied cat illustration set. Every option is shown before you select it.</p>
+    </article>
+    <aside class="source-card"><p class="eyebrow">Your card</p><p>Every choice is kept in the URL, so the exact portrait can be reopened or shared.</p></aside>
+  </section>
+</BaseLayout>

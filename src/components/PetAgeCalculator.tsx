@@ -157,6 +157,7 @@ export function PetAgeCalculator() {
           <div className="result-actions">
             <button type="button" onClick={copyResult}><Copy size={15} aria-hidden="true" /> Copy result</button>
             <button type="button" onClick={copyLink}><Link2 size={15} aria-hidden="true" /> Share link</button>
+            {(pet === "dog" || pet === "cat") && <a href={`/tools/pet-card?pet=${pet}&age=${age}`}>Make a pet card <span aria-hidden="true">→</span></a>}
             {copied && <span className="copy-status" role="status">Copied</span>}
           </div>
         </div>
